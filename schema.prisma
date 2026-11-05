@@ -1,0 +1,51 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id         String   @id @default(cuid())
+  source     String // "youtube" | "upload"
+  url        String?
+  title      String?
+  duration   Float?
+  ratio      String   @default("9:16") // 9:16 | 1:1 | 4:5 | 16:9
+  clipCount  Int      @default(4)
+  clipLength String   @default("auto") // auto | 30 | 45 | 60
+  captions   Boolean  @default(true)
+  status     String   @default("queued") // queued | working | done | error
+  stage      String   @default("Queued")
+  progress   Int      @default(0)
+  error      String?
+  language   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  clips      Clip[]
+}
+
+model Clip {
+  id       String  @id @default(cuid())
+  jobId    String
+  job      Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  index    Int
+  start    Float
+  end      Float
+  duration Float
+  score    Int     @default(0)
+  hook     Int     @default(0)
+  energy   Int     @default(0)
+  pacing   Int     @default(0)
+  flow     Int     @default(0)
+  reason   String?
+  title    String?
+  hashtags String?
+  file     String?
+  poster   String?
+  text     String?
+
+  @@index([jobId])
+}
