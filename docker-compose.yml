@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  viralcut:
+    build: .
+    container_name: viralcut
+    restart: unless-stopped
+    ports:
+      - "8080:3000"   # change to "80:80" if you want Caddy on the host to terminate TLS
+    volumes:
+      # persistent DB + rendered clips survive container rebuilds
+      - viralcut-data:/data
+      # if you've customized the Caddyfile, mount it:
+      # - ./Caddyfile:/app/Caddyfile:ro
+    environment:
+      - DATABASE_URL=file:/data/db/custom.db
+      - NODE_ENV=production
+      # bump if you have a small VM and the build keeps getting OOM-killed
+      - NODE_OPTIONS=--max-old-space-size=1024
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  viralcut-data:

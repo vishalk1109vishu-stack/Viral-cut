@@ -1,0 +1,26 @@
+# Caddyfile for ViralCut
+# Caddy serves HTTPS on port 80/443 and reverse-proxies to the Next.js
+# standalone server on port 3000.
+#
+# Replace :80 with your domain (e.g. viralcut.example.com) to get free
+# automatic HTTPS via Let's Encrypt.
+
+:80 {
+	# Optional: route to a different port via ?XTransformPort=N query
+	@transform_port_query {
+		query XTransformPort=*
+	}
+	handle @transform_port_query {
+		reverse_proxy localhost:{query.XTransformPort}
+	}
+
+	# Default: proxy to Next.js
+	handle {
+		reverse_proxy localhost:3000
+	}
+
+	# Streaming-friendly timeouts (clip downloads can be large)
+	request_body {
+		max_size 4GB
+	}
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": "nextjs",
+  "buildCommand": "bun install && bun run build",
+  "installCommand": "bun install",
+  "functions": {
+    "src/app/api/jobs/route.ts": {
+      "maxDuration": 300
+    },
+    "src/app/api/jobs/[id]/route.ts": {
+      "maxDuration": 60
+    },
+    "src/app/api/jobs/[id]/clips/[clipId]/route.ts": {
+      "maxDuration": 60
+    }
+  },
+  "env": {
+    "DATABASE_URL": "file:/tmp/custom.db"
+  }
+}

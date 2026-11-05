@@ -1,0 +1,7 @@
+# Python deps for the AI pipeline (transcription, face tracking, energy analysis)
+# Install with:  pip install -r requirements.txt
+faster-whisper==1.2.1
+av<13
+opencv-python-headless==4.13.0.90
+numpy>=1.26
+yt-dlp>=2026.10.26
